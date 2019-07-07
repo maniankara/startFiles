@@ -15,7 +15,7 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.example.com
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/4239aa0dcd76daeeb8ba0cda701851d14504d31aad1b2ddddbac6a57365e497c_sk
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/2fef9419f7383d334b258dca1e97737273fb3046f6750c853fa9271f835375a3_sk
     ports:
       - "7054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw'
@@ -58,6 +58,10 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0.org1.example.com:5984
+      - CORE_LEDGER_STATE_STATEDATABASE=couchdb
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=couchuser
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=couchpass
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
     # command: peer node start --peer-chaincodedev=true
@@ -71,6 +75,18 @@ services:
         - ./config:/etc/hyperledger/configtx
     depends_on:
       - orderer.example.com
+      - couchdb0.org1.example.com
+    networks:
+      - basic
+
+  couchdb0.org1.example.com:
+    container_name: couchdb0.org1.example.com
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=couchuser
+      - COUCHDB_PASSWORD=couchpass
+    ports:
+      - 5984:5984
     networks:
       - basic
 
@@ -86,6 +102,10 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
       - CORE_PEER_ADDRESS=peer1.org1.example.com:7051
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1.org1.example.com:5984
+      - CORE_LEDGER_STATE_STATEDATABASE=couchdb
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=couchuser
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=couchpass
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
     # command: peer node start --peer-chaincodedev=true
@@ -99,6 +119,18 @@ services:
         - ./config:/etc/hyperledger/configtx
     depends_on:
       - orderer.example.com
+      - couchdb1.org1.example.com
+    networks:
+      - basic
+
+  couchdb1.org1.example.com:
+    container_name: couchdb1.org1.example.com
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=couchuser
+      - COUCHDB_PASSWORD=couchpass
+    ports:
+      - 6984:5984
     networks:
       - basic
 
@@ -121,6 +153,7 @@ services:
         - /var/run/:/host/var/run/
         - ./../chaincode/:/opt/gopath/src/github.com/
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./config:/etc/hyperledger/configtx
     networks:
         - basic
     #depends_on:
