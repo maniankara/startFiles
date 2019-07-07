@@ -18,6 +18,7 @@ export FABRIC_START_TIMEOUT=5
 #echo ${FABRIC_START_TIMEOUT}
 sleep ${FABRIC_START_TIMEOUT}
 
+set -ev
 # Join peer0.org1.example.com and peer1.org1.example.com to the channel.
 docker exec peer0.org1.example.com peer channel fetch oldest allarewelcome.block -c allarewelcome -o orderer.example.com:7050
 docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com peer channel join -b allarewelcome.block
