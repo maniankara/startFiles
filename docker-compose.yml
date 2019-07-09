@@ -222,6 +222,87 @@ services:
     networks:
       - basic
 
+  kafka0.example.com:
+    container_name: kafka0.example.com
+    image: hyperledger/fabric-kafka
+    environment: 
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=2
+      - KAFKA_MESSAGE_MAX_BYTES=134217728
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=134217728
+      - KAFKA_BROKER_ID=0
+      - KAFKA_ZOOKEEPER_CONNECT=zoo0.example.com:2181,zoo1.example.com:2181,zoo2.example.com:2181
+    ports:
+      - 9092:9092
+      - 9093:9093
+    networks:
+      - basic
+    depends_on: 
+      - zoo0.example.com
+      - zoo1.example.com
+      - zoo2.example.com
+      
+  kafka1.example.com:
+    container_name: kafka1.example.com
+    image: hyperledger/fabric-kafka
+    environment: 
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=2
+      - KAFKA_MESSAGE_MAX_BYTES=134217728
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=134217728
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zoo0.example.com:2181,zoo1.example.com:2181,zoo2.example.com:2181
+    ports:
+      - 19092:9092
+      - 19093:9093
+    networks:
+      - basic
+    depends_on: 
+      - zoo0.example.com
+      - zoo1.example.com
+      - zoo2.example.com
+
+  zoo0.example.com:
+    container_name: zoo0.example.com
+    image: hyperledger/fabric-zookeeper
+    environment: 
+      - ZOO_MY_ID=1
+      - ZOO_SERVERS=server.1=zoo0.example.com:2888:3888,server2=zoo1.example.com:2888:3888,server3=zoo2.example.com:2888:3888
+    ports: 
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    networks: 
+      - basic
+
+  zoo1.example.com:
+    container_name: zoo1.example.com
+    image: hyperledger/fabric-zookeeper
+    environment: 
+      - ZOO_MY_ID=2
+      - ZOO_SERVERS=server.1=zoo0.example.com:2888:3888,server2=zoo1.example.com:2888:3888,server3=zoo2.example.com:2888:3888
+    ports: 
+      - 12181:2181
+      - 12888:2888
+      - 13888:3888
+    networks: 
+      - basic
+
+  zoo2.example.com:
+    container_name: zoo2.example.com
+    image: hyperledger/fabric-zookeeper
+    environment: 
+      - ZOO_MY_ID=3
+      - ZOO_SERVERS=server.1=zoo0.example.com:2888:3888,server2=zoo1.example.com:2888:3888,server3=zoo2.example.com:2888:3888
+    ports: 
+      - 22181:2181
+      - 22888:2888
+      - 23888:3888
+    networks: 
+      - basic
+
   cli:
     container_name: cli
     image: hyperledger/fabric-tools
