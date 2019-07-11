@@ -18,7 +18,7 @@ services:
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/516f7572b04d204b4d9eb346356f1c8040ab611d1922c0ec2d1bf85192cf141c_sk
     ports:
       - "7054:7054"
-    command: sh -c 'fabric-ca-server start -b admin:adminpw'
+    command: sh -c 'sleep 100000'
     volumes:
       - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca.example.com
