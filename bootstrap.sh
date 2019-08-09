@@ -16,6 +16,9 @@ cryptogen extend --config=crypto-config.yaml
 # org2 config material
 configtxgen -printOrg Org2MSP > ./config/org2.json
 
+# update the cli container
+docker-compose up -d cli
+
 # Fetch the latest config, convert to json
 docker exec cli peer channel fetch config config_block.pb -o orderer.example.com:7050 -c $CHANNEL_NAME 
 docker exec cli bash -c "configtxlator proto_decode --input config_block.pb --type common.Block | jq .data.data[0].payload.data.config > config.json"
